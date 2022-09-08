@@ -3,7 +3,9 @@ import pydicom
 import png
 import skimage
 import matplotlib.pyplot as plt
-import itk
+
+import numpy, shutil
+import nibabel as nib
 
 '''
 Convert input formats to desired output format
@@ -62,7 +64,7 @@ class FormatConverter:
     def mha_to_png(self):
         # loop through all files in input folder
         for filename in os.listdir(self.input_folder):
-            # check if file is a DICOM file
+            # check if file is a MHA file
             if filename.endswith('.mha'):
                 mha_path = os.path.join(self.input_folder, filename)
                 new_name = filename.replace('.mha', '')
@@ -80,9 +82,34 @@ class FormatConverter:
 
                 print('Converted ' + filename + ' to PNG slices at ' + self.output_folder)
 
+    def nifti_to_png(self):
+        # loop through all files in input folder
+        for filename in os.listdir(self.input_folder):
+            # check if file is a NIFTI file
+            if filename.endswith('.nii.gz'):
+                nifti_path = os.path.join(self.input_folder, filename)
+                new_name = filename.replace('.nii.gz', '')
+
+                # print(nifti_path, new_name)
+
+                img = nib.load(os.path.join(self.input_folder, filename))
+                data = img.get_fdata()
+
+                out_path = os.path.join(self.output_folder, new_name)
+                if not os.path.exists(out_path):
+                    os.mkdir(out_path)
+
+                # nifti is a 3D image, so saving 2D slices to directory
+                for i in range(data.shape[2]): #x is the sequence of images
+                    slice = data[:, :, i]
+                    
+                    plt.imsave(out_path + '/' + filename+ '_' + str(i) + '.png', slice)
 
 if __name__ == '__main__':
     # format: (input_dir, output_dir)
-    converter = FormatConverter('./MHA', './PNG')
+    # converter = FormatConverter('./MHA', './PNG')
+    converter = FormatConverter('./NIFTI', './PNG')
+    
     # converter.dicom_to_png()
-    converter.mha_to_png()
+    # converter.mha_to_png()
+    converter.nifti_to_png()

@@ -2,6 +2,7 @@
 *.png
 *.dcm
 *.mha
-
+*.gz
+*.nii
 
 DICOM.rar
