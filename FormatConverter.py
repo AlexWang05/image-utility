@@ -102,8 +102,10 @@ class FormatConverter:
                 # nifti is a 3D image, so saving 2D slices to directory
                 for i in range(data.shape[2]): #x is the sequence of images
                     slice = data[:, :, i]
-                    
-                    plt.imsave(out_path + '/' + filename+ '_' + str(i) + '.png', slice)
+
+                    plt.imsave(out_path + '/' + filename+ '_' + str(i) + '.png', slice, cmap='gray',format='png')
+
+                print('Converted ' + filename + ' to PNG slices at ' + out_path)
 
 if __name__ == '__main__':
     # format: (input_dir, output_dir)
