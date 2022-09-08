@@ -1,6 +1,9 @@
 import os
 import pydicom
 import png
+import skimage
+import matplotlib.pyplot as plt
+import itk
 
 '''
 Convert input formats to desired output format
@@ -11,7 +14,7 @@ class FormatConverter:
         self.output_folder = output_folder
     
     '''
-    Converts a single DICOM file to PNG
+    Converts DICOM files in folder to PNG
     '''
     def dicom_to_png(self):
         # loop through all files in input folder
@@ -52,9 +55,34 @@ class FormatConverter:
                 print('Converted ' + filename + ' to ' + new_name)
 
                 png_file.close()
+    
+    '''
+    Converts MHA files in folder to PNG
+    '''
+    def mha_to_png(self):
+        # loop through all files in input folder
+        for filename in os.listdir(self.input_folder):
+            # check if file is a DICOM file
+            if filename.endswith('.mha'):
+                mha_path = os.path.join(self.input_folder, filename)
+                new_name = filename.replace('.mha', '')
 
+                # mha is a 3D image, so saving 2D slices to directory
+                out_path = os.path.join(self.output_folder, new_name)
+                if not os.path.exists(out_path):
+                    os.mkdir(out_path)
+
+                img = skimage.io.imread(fname=mha_path, plugin='simpleitk')
+                
+                
+                for slicer in range(0, img.shape[0]):
+                    plt.imsave(out_path + '/' + filename+ '_' + str(slicer) + '.png', img[slicer], cmap='gray',format='png')
+
+                print('Converted ' + filename + ' to PNG slices at ' + self.output_folder)
 
 
 if __name__ == '__main__':
-    converter = FormatConverter('./DICOM', './PNG')  # input_dir, output_dir
-    converter.dicom_to_png()
+    # format: (input_dir, output_dir)
+    converter = FormatConverter('./MHA', './PNG')
+    # converter.dicom_to_png()
+    converter.mha_to_png()

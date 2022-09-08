@@ -1,6 +1,7 @@
-*.dcm
+# image data
 *.png
-
+*.dcm
+*.mha
 
 
 DICOM.rar
