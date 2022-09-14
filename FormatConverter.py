@@ -8,6 +8,8 @@ from PIL import Image
 
 '''
 Convert input formats to desired output format
+Use: create FormatConverter object with input (raw filetype) and output folder (.png)
+Call method corresponding to desired conversion
 '''
 class FormatConverter:
     def __init__(self, input_folder='./', output_folder='./'):
@@ -106,12 +108,18 @@ class FormatConverter:
 
                 print('Converted ' + filename + ' to PNG slices at ' + out_path)
 
+    '''
+    Used for .jpg or .jpeg file folders
+    '''
     def jpg_to_png(self):
         # loop through all files in input folder
         for filename in os.listdir(self.input_folder):
             # check if file is a JPG file
-            if filename.endswith('.jpg'):
-                new_name = filename.replace('.jpg', '.png')
+            if filename.endswith('.jpg') or filename.endswith('.jpeg'):
+                if (filename.endswith('.jpg')):
+                    new_name = filename.replace('.jpg', '.png')
+                else:
+                    new_name = filename.replace('.jpeg', '.png')
 
                 img = Image.open(os.path.join(self.input_folder, filename))
                 img.save(os.path.join(self.output_folder, new_name))
