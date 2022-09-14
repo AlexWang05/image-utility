@@ -3,9 +3,8 @@ import pydicom
 import png
 import skimage
 import matplotlib.pyplot as plt
-
-import numpy, shutil
 import nibabel as nib
+from PIL import Image
 
 '''
 Convert input formats to desired output format
@@ -107,11 +106,25 @@ class FormatConverter:
 
                 print('Converted ' + filename + ' to PNG slices at ' + out_path)
 
+    def jpg_to_png(self):
+        # loop through all files in input folder
+        for filename in os.listdir(self.input_folder):
+            # check if file is a JPG file
+            if filename.endswith('.jpg'):
+                new_name = filename.replace('.jpg', '.png')
+
+                img = Image.open(os.path.join(self.input_folder, filename))
+                img.save(os.path.join(self.output_folder, new_name))
+
+                print('Converted ' + filename + ' to ' + new_name)
+
 if __name__ == '__main__':
     # format: (input_dir, output_dir)
     # converter = FormatConverter('./MHA', './PNG')
-    converter = FormatConverter('./NIFTI', './PNG')
+    # converter = FormatConverter('./NIFTI', './PNG')
+    converter = FormatConverter('./JPG', './PNG')
     
     # converter.dicom_to_png()
     # converter.mha_to_png()
-    converter.nifti_to_png()
+    # converter.nifti_to_png()
+    converter.jpg_to_png()

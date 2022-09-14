@@ -4,5 +4,6 @@
 *.mha
 *.gz
 *.nii
+*.jpg
 
 DICOM.rar
